@@ -31,7 +31,7 @@ const deleteFile = (fileName) => {
     })
 }
 
-createFile('Fatih', 7000)
+createFile('employee1', 7000)
 readfile()
-updateFile("Özlem", 7500)
+updateFile("employee2", 7500)
 // deleteFile('employees.json')

@@ -1,3 +1,4 @@
+// import {readFile,writeFile,appendFile,unlink} from 'fs'
 const fs = require('fs');
 
 const createFile = (name, salary) => {

@@ -1,15 +1,14 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const methodOverride = require('method-override'); // güncelleme yaparken put işlemini post ile simule etmnek için
 const app = express();
 const ejs = require('ejs');
-const req = require('express/lib/request');
 const Post = require('./models/Post');
+const postController = require('./controllers/postControllers');
+const pageController = require('./controllers/pageControllers');
 
 //connect db
-mongoose.connect('mongodb://localhost/cleanblog-test-db', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+mongoose.connect('mongodb://localhost/cleanblog-test-db');
 
 // set view engine w ejs
 app.set('view engine', 'ejs');
@@ -18,33 +17,38 @@ app.set('view engine', 'ejs');
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(
+  methodOverride('_method', {
+    methods: ['POST', 'GET'], // gerektiğinde hangi metotların override edileceği expilicit-ayrıca belirtildi--delete işlemi bir get işlemi
+  })
+);
 
-//routes
-app.get('/', async (req, res) => {
-  const posts = await Post.find({});
-  res.render('index', {
-    posts,
-  });
-});
-app.get('/posts/:id', async (req, res) => {
-  const post = await Post.findById(req.params.id);
-  res.render('post', {
-    post,
-  });
-});
-app.get('/about', (req, res) => {
-  res.render('about');
-});
-app.get('/add_post', (req, res) => {
-  res.render('add_post');
-});
-app.get('/post', (req, res) => {
-  res.render('post');
-});
-app.post('/posts', async (req, res) => {
-  await Post.create(req.body);
-  res.redirect('/');
-});
+//ROUTES
+
+// get all posts
+app.get('/', postController.getAllPosts);
+
+// get post 
+app.get('/posts/:id', postController.getPost);
+
+// get about page
+app.get('/about', pageController.getAboutPage);
+
+// get add post page
+app.get('/add_post', pageController.getAddPostPage);
+
+// get edit page
+app.get('/posts/edit/:id', pageController.getEditPage);
+
+// create post
+app.post('/posts', postController.createPost);
+
+// update post
+app.put('/posts/:id', postController.updatePost);
+
+// delete post
+app.delete('/posts/:id', postController.deletePost);
+
 
 const port = 3000;
 app.listen(port, () => {

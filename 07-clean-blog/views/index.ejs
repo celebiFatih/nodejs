@@ -36,7 +36,11 @@
           </a>
           <p class="post-meta">Posted by
             <a href="#">Start Bootstrap</a>
-            on <%= posts[i].dateCreated  %>  </p>
+            on
+            <%= posts[i].dateCreated.toLocaleString('en-En', {month: 'long'})  %>
+            <%= posts[i].dateCreated.getDate()  %>,
+            <%= posts[i].dateCreated.getFullYear()  %>
+          </p>
         </div>
         <hr>
         <% } %> 
